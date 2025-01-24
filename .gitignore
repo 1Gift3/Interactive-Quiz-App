@@ -1,0 +1,13 @@
+# This helps with Ignoring Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environment
+venv/
+
+# Ignores SQLite database file
+quiz_app.db
+
+# Ignore environment variables
+.env
