@@ -6,8 +6,5 @@ __pycache__/
 # Ignore virtual environment
 venv/
 
-# Ignores SQLite database file
-quiz_app.db
-
 # Ignore environment variables
 .env
