@@ -1,15 +1,29 @@
 from flask_sqlalchemy import SQLAlchemy 
+from flask_bcrypt import Bcrypt
 
 # Lets Initialize our SQLAlchemy 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 # On now to the user model
 class User(db.Model):
-    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)  # Corrected case
     password = db.Column(db.String(150), nullable=False)
 
+    @property
+    def password(self):
+        raise AttributeError("Your Password is not readable")    
+
+    @password.setter
+    def password(self, password):
+        """Hashes the password before storing it."""
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):
+        """Verifies a provided password against the hashed password."""
+        return bcrypt.check_password_hash(self.password_hash, password)
+       
 # Our Quiz model
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)

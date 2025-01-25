@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
-from models import db, User
+from models import db, User, bcrypt
 
 # First we will intialize the Flask App
 app = Flask(__name__)
@@ -12,23 +12,24 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+bcrypt.init_app(app)
 migrate = Migrate(app, db)
 
 # Lets inittialize placeholder extensions e.g  SQLAlchemy
 
-@app.route('/add-test-user')
-def add_test_user():
-    with app.app_context():
+#@app.route('/add-test-user')
+#def add_test_user():
+    #with app.app_context():
         # Checking for an existing user or add a new one
-        existing_user = User.query.filter_by(username="test_user").first()
-        if existing_user:
-            existing_user.password = "new_password"  
-            return "Updated existing user's password!"
-        else:
-            user = User(username="test_user", password="password123")
-            db.session.add(user)
-            db.session.commit()
-            return "Added a new test user!"
+        #existing_user = User.query.filter_by(username="test_user").first()
+        #if existing_user:
+        #    existing_user.password = "new_password"  
+        #    return "Updated existing user's password!"
+        #else:
+        #    user = User(username="test_user", password="password123")
+#            db.session.add(user)
+#            db.session.commit()
+#            return "Added a new test user!"
 
 #Firstly we have to define our route
 @app.route('/')
