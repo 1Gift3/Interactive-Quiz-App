@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -49,6 +50,9 @@ with app.app_context():
 def get_users():
     users = User.query.all()
     return jsonify([{'id': user.id, 'username': user.username} for user in users])
+@app.route("/")
+def home():
+    return "Hello, Render!"
 
 # Route to verify user login
 @app.route('/login', methods=['POST'])
@@ -101,4 +105,6 @@ def add_quiz():
 
 # Run the Flask application
 if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
     app.run(debug=True)
