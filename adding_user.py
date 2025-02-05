@@ -4,6 +4,8 @@ from app import app
 with app.app_context():
     try:
         username = "new_user"
+        password = "another_secure_password"
+        
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             print("This user already exists.")

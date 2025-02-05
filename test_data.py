@@ -1,16 +1,33 @@
-from app import app, db
-from models import User, Quiz, Question, QuizResult
+import pytest
+from app import app , db, User, Quiz, Question, QuizResult
+
+
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    client = app.test_client()
 
 # Create test data
-with app.app_context():
+    with app.app_context():
     # Adds a test user
-    user = User(username='test_user', password='password123')
-    db.session.add(user)
+        db.create_all()
+        create_test_data()
+
+    yield client
+
+    with app.app_context():
+        db.drop_all()   
+
+def create_test_data():
+    #We adding a test user
+    user = User(username='first_user', password='password123') 
+    db.session.add(user)        
 
     # Adding  test quiz
-    quiz = Quiz(title='Python Basics')
+    quiz = Quiz(title='Python Basics', description= 'A basic quiz on python')
     db.session.add(quiz)
-    db.session.commit()  # Commit so we can reference the quiz ID
+    db.session.commit()  # Commit so we can reference the quiz id
 
     # Add questions for all the quiz
     question1 = Question(
@@ -33,5 +50,27 @@ with app.app_context():
 
     # Commiting all changes
     db.session.commit()
+
+def test_add_user(client):
+    response = client.post('/add_user', json={
+        'username': 'unique_user',
+        'password': 'testpass'
+    })
+    print("Response JSON:", response.json)
+    assert response.status_code == 201
+    assert response.json['message'] == 'New user added'
+
+def test_login(client):
+    client.post ('/add_user', json={
+        'username': 'unique_user_for_login',
+        'password': 'testpass'
+    })    
+    response = client.post('/login', json={
+         'username': 'unique_user_for_login',
+         'password': 'testpass'
+    })
+    assert response.status_code == 200
+    assert response.json['message'] == 'Login successful'
+
 
 print("Test data added!")
