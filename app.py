@@ -162,7 +162,7 @@ def add_quiz():
     db.session.commit()
     return jsonify({'message': 'Quiz has been added'}), 201
 
- @app.route('/logout')
+@app.route('/logout')
 @login_required
 def logout():
     logout_user()
